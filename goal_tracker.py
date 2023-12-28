@@ -27,6 +27,7 @@ def create_from_specifier(goal_data: list[Goal], specifier: str) -> bool:
             curr_parent = curr_goal
         else:
             curr_goal = search_result[0]
+            curr_goal.done = 'auto'
             search_list = curr_goal.children
             curr_parent = curr_goal
 
