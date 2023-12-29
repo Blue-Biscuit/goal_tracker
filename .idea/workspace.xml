@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1313a430-564d-4575-a062-076d7caf2302" name="Changes" comment="One-line bug fix">
+    <list default="true" id="1313a430-564d-4575-a062-076d7caf2302" name="Changes" comment="Implement change">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/goal_tracker.py" beforeDir="false" afterPath="$PROJECT_DIR$/goal_tracker.py" afterDir="false" />
     </list>
@@ -27,7 +27,6 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -43,7 +42,7 @@
     "Python.goal_tracker.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "progress__command"
+    "git-widget-placeholder": "fix__autodone__defaults"
   }
 }]]></component>
   <component name="RunManager">
@@ -99,11 +98,20 @@
       <option name="project" value="LOCAL" />
       <updated>1703799391197</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Implement change">
+      <option name="closed" value="true" />
+      <created>1703873490256</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1703873490256</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="One-line bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="One-line bug fix" />
+    <MESSAGE value="Implement change" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement change" />
   </component>
 </project>

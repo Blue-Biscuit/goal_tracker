@@ -20,19 +20,19 @@ def create_from_specifier(goal_data: list[Goal], specifier: str) -> bool:
     for lookup_title in specifier_list:
         search_result = [x for x in search_list if x.title == lookup_title]
         if len(search_result) == 0:
-            curr_goal = Goal(lookup_title, 'auto', curr_parent)
+            if curr_parent is not None:
+                curr_parent.done = 'auto'  # Because it now, whether it did previously or not, has a child.
+            curr_goal = Goal(lookup_title, False, curr_parent)
             search_list.append(curr_goal)
             search_list = curr_goal.children
             result = True
             curr_parent = curr_goal
         else:
+            if curr_parent is not None:
+                curr_parent.done = 'auto'  # Because it now, whether it did previously or not, has a child.
             curr_goal = search_result[0]
-            curr_goal.done = 'auto'
             search_list = curr_goal.children
             curr_parent = curr_goal
-
-    if result:
-        curr_parent.done = False
 
     return result
 
@@ -174,7 +174,6 @@ def main():
                 print('0%')
 
     if args.list:
-        print(args.list)
         for goal in goal_data:
             print(goal.pretty_str())
 
