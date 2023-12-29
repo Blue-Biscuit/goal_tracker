@@ -88,8 +88,9 @@ def setup_arguments() -> ArgumentParser:
     parser.add_argument('filename', help='The file which stores the goals.')
     parser.add_argument('-n', '--new', help='Creates a new goal, given a specifier')
     parser.add_argument('-d', '--delete', help='Deletes a goal, given a specifier')
-    parser.add_argument('-p', '--print', help='Prints a goal, given its specifier')
+    parser.add_argument('-s', '--show', help='Prints a goal, given its specifier')
     parser.add_argument('-l', '--list', action='store_true', help='Prints all goals in the file')
+    parser.add_argument('-p', '--progress', help='Prints what percent this goal is complete')
     parser.add_argument('-c', '--complete', help='Marks a task, given its specifier, as complete')
     parser.add_argument('-i', '--incomplete', help='Marks a task as "un-done"')
     parser.add_argument(
@@ -149,14 +150,31 @@ def main():
         else:
             to_mark.done = False
 
-    if args.print is not None:
-        to_print = find_from_specifier(goal_data, args.print)
+    if args.show is not None:
+        to_print = find_from_specifier(goal_data, args.show)
         if to_print is None:
-            print(f'No such goal to print: {args.print}')
+            print(f'No such goal to show: {args.print}')
         else:
             print(to_print.pretty_str())
 
-    if args.list is not None:
+    if args.progress is not None:
+        to_print = find_from_specifier(goal_data, args.progress)
+        if to_print is None:
+            print(f'No such goal to print progress: {args.progress}')
+        else:
+            if to_print.auto:
+                if len(to_print.children) == 0:
+                    print('100%')
+                else:
+                    children_done: list[Goal] = [x for x in to_print.children if x.done]
+                    print(f'{len(children_done) / len(to_print.children) * 100:.0f}%')
+            elif to_print.done:
+                print('100%')
+            else:
+                print('0%')
+
+    if args.list:
+        print(args.list)
         for goal in goal_data:
             print(goal.pretty_str())
 
