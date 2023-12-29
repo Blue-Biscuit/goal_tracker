@@ -89,6 +89,7 @@ def setup_arguments() -> ArgumentParser:
     parser.add_argument('-n', '--new', help='Creates a new goal, given a specifier')
     parser.add_argument('-d', '--delete', help='Deletes a goal, given a specifier')
     parser.add_argument('-p', '--print', help='Prints a goal, given its specifier')
+    parser.add_argument('-l', '--list', action='store_true', help='Prints all goals in the file')
     parser.add_argument('-c', '--complete', help='Marks a task, given its specifier, as complete')
     parser.add_argument('-i', '--incomplete', help='Marks a task as "un-done"')
     parser.add_argument(
@@ -154,6 +155,10 @@ def main():
             print(f'No such goal to print: {args.print}')
         else:
             print(to_print.pretty_str())
+
+    if args.list is not None:
+        for goal in goal_data:
+            print(goal.pretty_str())
 
     try:
         with open(args.filename, 'w') as out_file:
