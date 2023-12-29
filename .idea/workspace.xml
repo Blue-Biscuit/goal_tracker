@@ -43,7 +43,7 @@
     "Python.goal_tracker.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "list__command"
+    "git-widget-placeholder": "progress__command"
   }
 }]]></component>
   <component name="RunManager">
