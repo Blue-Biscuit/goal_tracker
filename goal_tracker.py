@@ -6,13 +6,22 @@ from goal import Goal
 from argparse import ArgumentParser
 import json
 
-
 APP_VERSION = 'alpha'
+
+
+def string_is_int(title: str) -> bool:
+    """Returns true if the string is an integer."""
+    try:
+        int(title)
+        return True
+    except ValueError:
+        return False
 
 
 def create_from_specifier(goal_data: list[Goal], specifier: str) -> bool:
     """Creates given a specifier, which is formatted like this: a.b.c. Returns True if something was added.
-    By default, everything before the final is set to auto-done, whereas the final is set to false."""
+    By default, everything before the final is set to auto-done, whereas the final is set to false.
+    Throws a value error if the user tries to create a goal with an invalid title."""
     specifier_list = specifier.split('.')
     search_list = goal_data
     curr_parent: Goal | None = None
@@ -20,9 +29,14 @@ def create_from_specifier(goal_data: list[Goal], specifier: str) -> bool:
     for lookup_title in specifier_list:
         search_result = [x for x in search_list if x.title == lookup_title]
         if len(search_result) == 0:
+            # If the lookup title is just an int, error out; an integer is an invalid goal title.
+            if string_is_int(lookup_title):
+                raise ValueError(f'Cannot create a goal with title "{lookup_title}": name cannot be an integer.')
+
             if curr_parent is not None:
                 curr_parent.done = 'auto'  # Because it now, whether it did previously or not, has a child.
             curr_goal = Goal(lookup_title, False, curr_parent)
+
             search_list.append(curr_goal)
             search_list = curr_goal.children
             result = True
@@ -115,9 +129,13 @@ def main():
         except OSError:
             pass
 
-        created = create_from_specifier(goal_data, args.new)
-        if not created:
-            print(f'{args.new} already exists')
+        try:
+            created = create_from_specifier(goal_data, args.new)
+            if not created:
+                print(f'{args.new} already exists')
+
+        except ValueError as err:  # User input an invalid name
+            print(err.args[0])
 
         with open(args.filename, 'w') as out_file:
             json_data = [x.__dict__() for x in goal_data]
