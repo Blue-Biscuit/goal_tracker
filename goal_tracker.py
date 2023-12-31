@@ -81,13 +81,24 @@ def find_from_specifier(goal_data: list[Goal], specifier: str) -> Goal | None:
     specifier = specifier.split('.')
     search_list = goal_data
     for lookup_title in specifier:
-        search_result = [x for x in search_list if x.title == lookup_title]
-        if len(search_result) == 0:
-            result = None
-            break
-        else:
-            result = search_result[0]
+        # If given an integer, find based upon index
+        if string_is_int(lookup_title):
+            idx_lookup = int(lookup_title)
+            if idx_lookup not in range(len(search_list)):
+                raise ValueError(f'Index not in range: {idx_lookup}')
+
+            result = search_list[idx_lookup]
             search_list = result.children
+
+        # Else, find based on title
+        else:
+            search_result = [x for x in search_list if x.title == lookup_title]
+            if len(search_result) == 0:
+                result = None
+                break
+            else:
+                result = search_result[0]
+                search_list = result.children
 
     return result
 
