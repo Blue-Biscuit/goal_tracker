@@ -99,20 +99,39 @@ def delete_from_specifier(goal_data: list[Goal], specifier: str) -> bool:
 
     search_list = goal_data
     for idx, lookup_title in enumerate(specifier_list):
-        search_result = [x for x in search_list if x.title == lookup_title]
-        if len(search_result) == 0:
-            return result
-        else:
+        # Process a specifier given as an index
+        if string_is_int(lookup_title):
+            idx_lookup = int(lookup_title)
+            if idx_lookup not in range(len(search_list)):
+                raise ValueError(f'Index not in range: {idx_lookup}')
+
             if idx == len(specifier_list) - 1:
-                search_list.remove(search_result[0])
+                to_remove = search_list[idx_lookup]
+                search_list.remove(to_remove)
                 result = True
 
                 # We need to set the parent to a non-auto resolve state if this is the last element.
-                if search_result[0].parent is not None and len(search_list) == 0:
-                    search_result[0].parent.done = False
-
+                if to_remove.parent is not None and len(search_list) == 0:
+                    to_remove.parent.done = False
             else:
-                search_list = search_result[0].children
+                search_list = search_list[idx_lookup].children
+
+        # Process a specifier given as a title
+        else:
+            search_result = [x for x in search_list if x.title == lookup_title]
+            if len(search_result) == 0:
+                return result
+            else:
+                if idx == len(specifier_list) - 1:
+                    search_list.remove(search_result[0])
+                    result = True
+
+                    # We need to set the parent to a non-auto resolve state if this is the last element.
+                    if search_result[0].parent is not None and len(search_list) == 0:
+                        search_result[0].parent.done = False
+
+                else:
+                    search_list = search_result[0].children
 
     return result
 
@@ -173,9 +192,12 @@ def main():
         return
 
     if args.delete is not None:
-        deleted = delete_from_specifier(goal_data, args.delete)
-        if not deleted:
-            print(f'No such goal to delete: {args.delete}')
+        try:
+            deleted = delete_from_specifier(goal_data, args.delete)
+            if not deleted:
+                print(f'No such goal to delete: {args.delete}')
+        except ValueError as err:
+            print(err.args[0])
 
     if args.complete is not None:
         to_mark = find_from_specifier(goal_data, args.complete)
