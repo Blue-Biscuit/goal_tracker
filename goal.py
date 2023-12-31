@@ -98,18 +98,24 @@ class Goal:
         """True if this task is set to autocomplete when its children finish."""
         return self._done == 'auto'
 
-    def pretty_str(self, spaces: int = 0, space_inc: int = 4) -> str:
+    def pretty_str(self, spaces: int = 0, space_inc: int = 4, *, idx: int | None = None) -> str:
         """Prints a pretty representation of the goal and its children."""
         result = StringIO()
 
-        result.write(' ' * spaces + self.title)
+        # Print the current goal
+        result.write(' ' * spaces)
+        if idx is not None:
+            result.write(f'{idx}: ')
+        result.write(self.title)
         if self.done:
             result.write(' (X)')
         if self._done == 'auto':
             result.write(' (auto)')
         result.write('\n')
-        for child in self.children:
-            result.write(child.pretty_str(spaces + space_inc, space_inc))
+
+        # Recursively print the children
+        for idx_c, child in enumerate(self.children):
+            result.write(child.pretty_str(spaces + space_inc, space_inc, idx=idx_c))
 
         return result.getvalue()
 

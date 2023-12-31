@@ -192,8 +192,8 @@ def main():
                 print('0%')
 
     if args.list:
-        for goal in goal_data:
-            print(goal.pretty_str())
+        for idx, goal in enumerate(goal_data):
+            print(goal.pretty_str(idx=idx))
 
     try:
         with open(args.filename, 'w') as out_file:
