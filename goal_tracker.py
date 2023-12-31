@@ -26,27 +26,50 @@ def create_from_specifier(goal_data: list[Goal], specifier: str) -> bool:
     search_list = goal_data
     curr_parent: Goal | None = None
     result = False
-    for lookup_title in specifier_list:
-        search_result = [x for x in search_list if x.title == lookup_title]
-        if len(search_result) == 0:
-            # If the lookup title is just an int, error out; an integer is an invalid goal title.
-            if string_is_int(lookup_title):
-                raise ValueError(f'Cannot create a goal with title "{lookup_title}": name cannot be an integer.')
+
+    for idx, lookup_title in enumerate(specifier_list):
+        # If the title in the specifier is an int, get the next goal by index
+        if string_is_int(lookup_title):
+            # The last element in the specifier cannot be an index, because you need a title to create a goal
+            if idx == len(specifier_list) - 1:
+                raise ValueError(f'Last element in specifier cannot be an index: {specifier}')
+
+            idx_lookup = int(lookup_title)
+            if idx_lookup not in range(len(search_list)):
+                raise ValueError(f'Index not in range: {idx_lookup}')
 
             if curr_parent is not None:
-                curr_parent.done = 'auto'  # Because it now, whether it did previously or not, has a child.
-            curr_goal = Goal(lookup_title, False, curr_parent)
-
-            search_list.append(curr_goal)
+                curr_parent.done = 'auto'
+            curr_goal = search_list[idx_lookup]
             search_list = curr_goal.children
-            result = True
             curr_parent = curr_goal
+
+        # If the title is a string, get the next goal by lookup
         else:
-            if curr_parent is not None:
-                curr_parent.done = 'auto'  # Because it now, whether it did previously or not, has a child.
-            curr_goal = search_result[0]
-            search_list = curr_goal.children
-            curr_parent = curr_goal
+            search_result = [x for x in search_list if x.title == lookup_title]
+
+            # Add the goal from the specifier if it does not exist
+            if len(search_result) == 0:
+                # If the lookup title is just an int, error out; an integer is an invalid goal title.
+                if string_is_int(lookup_title):
+                    raise ValueError(f'Cannot create a goal with title "{lookup_title}": name cannot be an integer.')
+
+                if curr_parent is not None:
+                    curr_parent.done = 'auto'  # Because it now, whether it did previously or not, has a child.
+                curr_goal = Goal(lookup_title, False, curr_parent)
+
+                search_list.append(curr_goal)
+                search_list = curr_goal.children
+                result = True
+                curr_parent = curr_goal
+
+            # If the goal exists, set up to search its children
+            else:
+                if curr_parent is not None:
+                    curr_parent.done = 'auto'  # Because it now, whether it did previously or not, has a child.
+                curr_goal = search_result[0]
+                search_list = curr_goal.children
+                curr_parent = curr_goal
 
     return result
 
